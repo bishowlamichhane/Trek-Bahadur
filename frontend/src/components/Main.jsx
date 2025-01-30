@@ -2,8 +2,8 @@ import { useRef } from "react";
 import useStore from "../store/store.js";
 import { FcDebian } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import model from "../config/gemini.js";
 import Loading from "./Loading.jsx";
-import { IoSettingsOutline } from "react-icons/io5";
 const Main = () => {
   const navigate = useNavigate();
   const userData = useStore((state) => state.userData);
@@ -15,16 +15,50 @@ const Main = () => {
   const setPrevPrompt = useStore((state) => state.setPrevPrompt);
   const inputElement = useRef(null);
   const result = useStore((state) => state.result);
+  const setResult = useStore((state) => state.setResult);
   const showResult = useStore((state) => state.showResult);
   const setShowResult = useStore((state) => state.setShowResult);
-  const setIsLoading = useStore((state) => state.setIsLoading);
   const isLoading = useStore((state) => state.isLoading);
+  const setIsLoading = useStore((state) => state.setIsLoading);
+  // const sendInput = async () => {
+  //   const input = inputElement.current.value;
+
+  //   const command = {
+  //     input,
+  //   };
+  //   try {
+  //     const response = await fetch("/api/users/addCommand", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(command),
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const userCommand = data.data;
+
+  //       setRecentPrompt(userCommand.input);
+  //       setPrevPrompt(userCommand.input);
+
+  //       const tryy = await model.generateContent(userCommand.input);
+  //       const resultText = tryy.response.text();
+  //       setResult(resultText);
+  //       inputElement.current.value = "";
+  //     }
+  //   } catch (err) {
+  //     console.log("Error sending the input command ", err);
+  //   }
+  // };
   const sendInput = async () => {
+    setIsLoading(true);
     const input = inputElement.current.value;
 
     const command = {
       input,
     };
+
     try {
       const response = await fetch("/api/users/addCommand", {
         method: "POST",
@@ -40,17 +74,24 @@ const Main = () => {
 
         setRecentPrompt(userCommand.input);
         setPrevPrompt(userCommand.input);
-        inputElement.current.value = "";
+        const tryy = await model.generateContent(userCommand.input);
 
-        setTimeout(() => {
-          setShowResult(false);
-          setIsLoading(true);
-        }, 3000);
+        if (tryy.response) {
+          const resultText = await tryy.response.text();
+          console.log("Result text:", resultText); // Log the result text
+          setResult(resultText);
+          setIsLoading(false);
+        } else {
+          console.error("No response field in tryy object");
+        }
+
+        inputElement.current.value = "";
       }
     } catch (err) {
       console.log("Error sending the input command ", err);
     }
   };
+
   const openProfile = () => {};
   return (
     <div className=" w-full h-screen flex flex-col pr-14 pl-10 pt-4 pb-14 items-center justify-between gap-4  ">
@@ -72,7 +113,7 @@ const Main = () => {
         </div>
       </div>
 
-      {!recentPrompt ? (
+      {!recentPrompt.length ? (
         <div className="w-full h-full flex flex-col items-center justify-around ">
           <div className="w-3/4 h-1/3  flex flex-col gap-6 items-center py-6">
             <div className="text-6xl font-medium bg-gradient-to-r from-blue-900 via-red-500 to-purple-900 bg-clip-text text-transparent">
@@ -110,13 +151,15 @@ const Main = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-full flex flex-col justify-start px-24">
-          <div className="self-end w-auto h-auto px-4 py-2 bg-slate-300 rounded-2xl">
+        <div className="w-full h-full flex flex-col justify-start px-24 py-20 gap-4  items-center">
+          <div className="self-end w-1/3 h-auto px-4 py-2 bg-slate-300 rounded-2xl">
             {recentPrompt}
           </div>
-          {isLoading ? (
-            <div className="flex gap-4 items-center">
-              <FcDebian />
+          {!isLoading ? (
+            <div className="flex items-start gap-2 w-2/3">
+              <div className="h-4 w-4">
+                <FcDebian />
+              </div>
               {result}
             </div>
           ) : (

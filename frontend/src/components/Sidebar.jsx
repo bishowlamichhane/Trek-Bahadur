@@ -11,7 +11,6 @@ import useStore from "../store/store.js";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const prevPrompt = useStore((state) => state.prevPrompt);
-  const count = prevPrompt.length + 1;
   const setUserData = useStore((state) => state.setUserData);
   const token = useStore((state) => state.accessToken);
   const toggleSidebar = () => {

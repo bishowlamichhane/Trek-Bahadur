@@ -54,35 +54,27 @@ const useStore = create((set)=>({
       }
     },
 
-    recentPrompt:null,
-    setRecentPrompt:(recentPrompt)=>set(state=>({
-      recentPrompt:recentPrompt
-    })),
-    prevPrompt:[],
-    setPrevPrompt:(prev)=>set(state=>(
-      {
-        prevPrompt:[...state.prevPrompt,prev]
-      }
-    )),
+    recentPrompt: '',
+  setRecentPrompt: (recentPrompt) => set({ recentPrompt }),
 
-    showResult:false,
-    setShowResult:()=>set(state=>
-    ({
-      showResult:!state.showResult
-    })
-    ),
+  prevPrompt: [],
+  setPrevPrompt: (prev) => set((state)=>({
+    prevPrompt:[...state.prevPrompt,prev]
+  })),
 
-    result:["This is your result"],
-    setResult:()=>set(state=>({
-      result:state.result
-    })),
-    isLoading : false,
+  result: '',
+  setResult: (newResult) => set({ result: newResult }),
+
+    isLoading:false,
     setIsLoading:()=>set(state=>({
       isLoading:!state.isLoading
-    }))
+    })),
     
 
-
+    showResult:false,
+    setShowResult:()=>set(state=>({
+      showResult:!state.showResult
+    })) 
   
 
 
