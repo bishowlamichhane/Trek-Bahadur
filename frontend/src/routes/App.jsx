@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import useStore from "../store/store.js";
 import { useEffect } from "react";
-
+import { motion } from "framer-motion";
 import "./App.css";
 const App = () => {
   const initializeAuth = useStore((state) => state.initializeAuth);
@@ -10,9 +10,14 @@ const App = () => {
   }, [initializeAuth]);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1.7 }}
+    >
       <Outlet />
-    </div>
+    </motion.div>
   );
 };
 

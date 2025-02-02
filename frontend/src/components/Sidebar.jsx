@@ -8,9 +8,13 @@ import { FaRegCircleUser } from "react-icons/fa6";
 
 import { useNavigate } from "react-router-dom";
 import useStore from "../store/store.js";
+
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const prevPrompt = useStore((state) => state.prevPrompt);
+  const setRecentPrompt = useStore((state) => state.setRecentPrompt);
+  const result = useStore((state) => state.setResult);
+  const setResult = useStore((state) => state.setResult);
   const setUserData = useStore((state) => state.setUserData);
   const token = useStore((state) => state.accessToken);
   const toggleSidebar = () => {
@@ -34,7 +38,6 @@ const Sidebar = () => {
       if (response.ok) {
         setLoggedIn(false);
         setUserData(null);
-        setUserData(false);
         navigate("/");
       }
     } catch (err) {
@@ -46,7 +49,11 @@ const Sidebar = () => {
     navigate("/register");
   };
 
-  const openPrompt = async () => {};
+  // Add prompt to the store
+  const openPrompt = (prompt) => {
+    setRecentPrompt(prompt);
+  };
+
   return (
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <div className="w-full h-20  border-b-2 ">
@@ -62,12 +69,7 @@ const Sidebar = () => {
           </span>
         </div>
 
-        <div
-          className="w-2/3 h-10 
-      \
-      [-96] block gap-2 mt-4 flex justify-start"
-        >
-          {" "}
+        <div className="w-2/3 h-10  gap-2 mt-4 flex justify-start">
           <p className="text-sm">Recent </p>
         </div>
         <div className="w-2/3 h-full  p-2 block gap-2 mt-4">
@@ -76,8 +78,8 @@ const Sidebar = () => {
               prevPrompt.map((prompt, index) => (
                 <p
                   key={index}
-                  className="overflow-hidden whitespace-nowrap text-sm text-gray-900 bg-slate-100 px-2 rounded-md"
-                  onClick={openPrompt}
+                  className="overflow-hidden whitespace-nowrap text-sm text-gray-900 bg-slate-100 px-2 rounded-md cursor-pointer"
+                  onClick={() => openPrompt(prompt)} // Pass prompt to openPrompt function
                 >
                   {prompt.slice(0, 18)}
                 </p>
@@ -88,11 +90,21 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-36  flex flex-col justify-start  border border-1">
-        <div>
-          <IoIosHelpCircleOutline />
-          <IoSettingsSharp />
-          <GoHistory />
+      <div className="w-full h-36  flex gap-2 flex-col justify-start">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 cursor-pointer">
+            <IoIosHelpCircleOutline />
+            Help
+          </div>
+
+          <div className="flex items-center  gap-2 cursor-pointer">
+            <IoSettingsSharp />
+            Settings
+          </div>
+          <div className="flex items-center  gap-2  cursor-pointer">
+            <GoHistory />
+            History
+          </div>
         </div>
         <div
           className="w-full h-6  flex justify-start cursor-pointer items-center  gap-2 whitespace-nowrap"

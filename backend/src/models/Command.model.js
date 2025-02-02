@@ -6,6 +6,11 @@ const commandSchema = new mongoose.Schema({
         required:true,
         trim:true
     },
+    result:{
+        type:String,
+        required:true,
+        trim:true
+    }
 
 
 },{timestamps:true})

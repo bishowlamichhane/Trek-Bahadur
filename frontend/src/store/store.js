@@ -1,4 +1,5 @@
 import {create} from 'zustand'
+import {persist,createJSONStorage} from 'zustand/middleware'
 
 const useStore = create((set)=>({
   
@@ -54,28 +55,26 @@ const useStore = create((set)=>({
       }
     },
 
-    recentPrompt: '',
-  setRecentPrompt: (recentPrompt) => set({ recentPrompt }),
+    recentPrompt: [],
+  setRecentPrompt: (recentPrompt) => set(state=>({
+    recentPrompt:[...state.recentPrompt,recentPrompt]
+  })),
 
-  prevPrompt: [],
+  prevPrompt: JSON.parse(localStorage.getItem('prevPrompt'))||[],
   setPrevPrompt: (prev) => set((state)=>({
     prevPrompt:[...state.prevPrompt,prev]
   })),
 
-  result: '',
-  setResult: (newResult) => set({ result: newResult }),
+  result: [],
+  setResult: (result) => set(state=>({
+    result:[...state.result,result]
+  })),
 
-    isLoading:false,
-    setIsLoading:()=>set(state=>({
-      isLoading:!state.isLoading
-    })),
+   
+   
     
 
-    showResult:false,
-    setShowResult:()=>set(state=>({
-      showResult:!state.showResult
-    })) 
-  
+   
 
 
     

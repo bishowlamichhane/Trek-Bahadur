@@ -7,12 +7,12 @@ import mongoose, { Schema } from "mongoose"
 const addCommand = asyncHandler (async (req,res)=>{
 
 
-    const {input} = req.body
+    const {input,result} = req.body
     if(!input)
         throw new ApiError(400,"Input not received")
     
     const newCommand = await Command.create({
-        input
+        input,result
     })
     await newCommand.save();
 

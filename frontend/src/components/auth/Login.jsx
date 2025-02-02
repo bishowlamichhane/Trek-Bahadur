@@ -8,7 +8,7 @@ import useStore from "../../store/store.js";
 const Login = () => {
   const navigate = useNavigate();
 
-  const usernameElement = useRef(null);
+  const emailElement = useRef(null);
 
   const passwordElement = useRef(null);
   const setLoggedIn = useStore((state) => state.setLoggedIn);
@@ -18,17 +18,17 @@ const Login = () => {
   const submitForm = async (e) => {
     e.preventDefault();
 
-    const username = usernameElement.current.value;
+    const email = emailElement.current.value;
 
     const password = passwordElement.current.value;
 
-    if (!username || !password) {
+    if (!email || !password) {
       alert("Please fill out all the fields");
       return;
     }
 
     const formData = {
-      username,
+      email,
       password,
     };
 
@@ -60,7 +60,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between items-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-200 w-1/3 h-6/7 rounded-2xl px-6 shadow-lg">
+    <div className="flex flex-col justify-between items-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-black w-1/3 h-3/5 rounded-2xl px-6 shadow-lg">
       {/* Logo */}
       <div className="w-full h-1/6 flex items-center justify-center border-b border-gray-300 mb-4">
         <img src="/trekBahadur_logo.png" className="w-64 h-auto" alt="Logo" />
@@ -84,12 +84,12 @@ const Login = () => {
       {/* Form */}
       <form className="w-full flex flex-col space-y-4 px-6">
         <div className="flex flex-col">
-          <label className="text-gray-600 mb-1">username</label>
+          <label className="text-gray-600 mb-1">Email</label>
           <input
-            ref={usernameElement}
+            ref={emailElement}
             required
             type="text"
-            placeholder="username"
+            placeholder="Email"
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
