@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { IoMdAdd } from "react-icons/io";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { GoHistory } from "react-icons/go";
 import { IoSettingsSharp } from "react-icons/io5";
 import { FaRegCircleUser } from "react-icons/fa6";
-
 import { useNavigate } from "react-router-dom";
 import useStore from "../store/store.js";
 
@@ -13,18 +12,17 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const prevPrompt = useStore((state) => state.prevPrompt);
   const setRecentPrompt = useStore((state) => state.setRecentPrompt);
-  const result = useStore((state) => state.setResult);
-  const setResult = useStore((state) => state.setResult);
   const setUserData = useStore((state) => state.setUserData);
   const token = useStore((state) => state.accessToken);
-  const toggleSidebar = () => {
-    setIsOpen((prev) => !prev);
-  };
 
   const loggedIn = useStore((state) => state.loggedIn);
   const setLoggedIn = useStore((state) => state.setLoggedIn);
 
   const navigate = useNavigate();
+
+  const toggleSidebar = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   const logOut = async () => {
     try {
@@ -49,37 +47,46 @@ const Sidebar = () => {
     navigate("/register");
   };
 
-  // Add prompt to the store
   const openPrompt = (prompt) => {
     setRecentPrompt(prompt);
   };
 
   return (
-    <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-      <div className="w-full h-20  border-b-2 ">
-        <div className="menu-toggle" onClick={toggleSidebar}>
-          <IoMenu className="w-6 h-6 text-gray-700" />
-        </div>
-      </div>
-      <div className="w-full h-full mt-4 flex flex-col items-start">
-        <div className="w-2/3 h-10  flex justify-start items-center gap-2 cursor-pointer">
-          <p className="text-sm">New </p>
-          <span>
-            <IoMdAdd />
-          </span>
+    <>
+      <button
+        className="fixed top-1 left-1 z-50 md:hidden bg-gray-800 text-white p-2 rounded-md"
+        onClick={toggleSidebar}
+      >
+        <IoMenu className="w-6 h-6" />
+      </button>
+
+      <div
+        className={`fixed inset-y-0 left-0 bg-white w-64 shadow-md transition-transform transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:relative md:w-64 z-40 flex flex-col h-screen`}
+      >
+        <div className="w-full h-20 border-b-2 flex items-center px-4">
+          <button className="md:hidden" onClick={toggleSidebar}>
+            <IoMenu className="w-6 h-6 text-gray-700" />
+          </button>
         </div>
 
-        <div className="w-2/3 h-10  gap-2 mt-4 flex justify-start">
-          <p className="text-sm">Recent </p>
-        </div>
-        <div className="w-2/3 h-full  p-2 block gap-2 mt-4">
-          <div className="w-full flex flex-col gap-1">
+        <div className="flex-1 overflow-y-auto px-4">
+          <div className="w-full h-10 flex items-center gap-2 cursor-pointer">
+            <p className="text-sm">New</p>
+            <IoMdAdd />
+          </div>
+
+          <div className="w-full h-10 gap-2 mt-4 flex">
+            <p className="text-sm">Recent</p>
+          </div>
+          <div className="w-full p-2">
             {prevPrompt.length > 0 ? (
               prevPrompt.map((prompt, index) => (
                 <p
                   key={index}
                   className="overflow-hidden whitespace-nowrap text-sm text-gray-900 bg-slate-100 px-2 rounded-md cursor-pointer"
-                  onClick={() => openPrompt(prompt)} // Pass prompt to openPrompt function
+                  onClick={() => openPrompt(prompt)}
                 >
                   {prompt.slice(0, 18)}
                 </p>
@@ -89,40 +96,48 @@ const Sidebar = () => {
             )}
           </div>
         </div>
-      </div>
-      <div className="w-full h-36  flex gap-2 flex-col justify-start">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <IoIosHelpCircleOutline />
-            Help
+
+        <div className="w-full p-4 border-t-2">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 cursor-pointer">
+              <IoIosHelpCircleOutline />
+              Help
+            </div>
+            <div className="flex items-center gap-2 cursor-pointer">
+              <IoSettingsSharp />
+              Settings
+            </div>
+            <div className="flex items-center gap-2 cursor-pointer">
+              <GoHistory />
+              History
+            </div>
           </div>
 
-          <div className="flex items-center  gap-2 cursor-pointer">
-            <IoSettingsSharp />
-            Settings
+          <div
+            className="w-full h-6 flex items-center gap-2 cursor-pointer mt-4"
+            onClick={register}
+          >
+            <FaRegCircleUser />
+            {loggedIn ? (
+              <p className="text-sm" onClick={logOut}>
+                Log out
+              </p>
+            ) : (
+              <p className="text-sm" onClick={register}>
+                Sign Up
+              </p>
+            )}
           </div>
-          <div className="flex items-center  gap-2  cursor-pointer">
-            <GoHistory />
-            History
-          </div>
-        </div>
-        <div
-          className="w-full h-6  flex justify-start cursor-pointer items-center  gap-2 whitespace-nowrap"
-          onClick={register}
-        >
-          <FaRegCircleUser />
-          {loggedIn ? (
-            <p className="text-sm" onClick={logOut}>
-              Log out
-            </p>
-          ) : (
-            <p className="text-sm" onClick={register}>
-              Sign Up
-            </p>
-          )}
         </div>
       </div>
-    </div>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 md:hidden"
+          onClick={toggleSidebar}
+        ></div>
+      )}
+    </>
   );
 };
 
