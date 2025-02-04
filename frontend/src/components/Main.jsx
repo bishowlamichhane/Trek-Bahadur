@@ -81,12 +81,12 @@ const Main = () => {
     const words = text.split(" ");
     let i = 0;
     const wordInterval = setInterval(() => {
-      setCurrentText((prev) => prev + " " + words[i]);
+      setCurrentText((prev) => prev + " " + words[i - 1]);
       i++;
       if (i === words.length) {
         clearInterval(wordInterval); // Stop after the last word
       }
-    }, 50); // Adjust the interval time to control the speed of word display
+    }, 30); // Adjust the interval time to control the speed of word display
   };
 
   return (
