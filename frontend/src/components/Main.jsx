@@ -15,7 +15,7 @@ const Main = () => {
   const loggedIn = useStore((state) => state.loggedIn);
   const firstName =
     loggedIn && userData.fullName ? userData.fullName.split(" ")[0] : "there";
-  const [currentText, setCurrentText] = useState(""); // State to hold current text for word-wise display
+
   const [isLoading, setIsLoading] = useState(false);
   const recentPrompt = useStore((state) => state.recentPrompt);
   const setRecentPrompt = useStore((state) => state.setRecentPrompt);
@@ -47,10 +47,7 @@ const Main = () => {
       resultText = resultText.replace(/\*/g, "");
     }
     setResult(resultText);
-
     setIsLoading(false);
-    setCurrentText("");
-    displayText(resultText);
 
     const command = {
       input,
@@ -73,19 +70,6 @@ const Main = () => {
     } catch (err) {
       console.log("Error sending the input command ", err);
     }
-  };
-  const displayText = (resultText) => {
-    let words = resultText.split(" ");
-    let index = 0;
-
-    const intervalId = setInterval(() => {
-      setCurrentText((prev) => prev + " " + words[index]);
-      index += 1;
-
-      if (index === words.length) {
-        clearInterval(intervalId);
-      }
-    }, 50);
   };
 
   return (
@@ -148,8 +132,8 @@ const Main = () => {
                       <FcDebian className="text-4xl" />
                     </div>
 
-                    <ReactMarkdown className="prose prose-md" key={idx}>
-                      {currentText}
+                    <ReactMarkdown className="prose prose-md">
+                      {result[idx]}
                     </ReactMarkdown>
                   </div>
                 ) : (
