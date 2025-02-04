@@ -36,6 +36,7 @@ const Sidebar = () => {
       if (response.ok) {
         setLoggedIn(false);
         setUserData(null);
+
         navigate("/");
       }
     } catch (err) {
@@ -85,7 +86,7 @@ const Sidebar = () => {
               prevPrompt.map((prompt, index) => (
                 <p
                   key={index}
-                  className="overflow-hidden whitespace-nowrap text-sm text-gray-900 bg-slate-100 px-2 rounded-md cursor-pointer"
+                  className="overflow-hidden whitespace-nowrap text-sm text-gray-900 bg-slate-100 px-2 rounded-md mb-4 cursor-pointer"
                   onClick={() => openPrompt(prompt)}
                 >
                   {prompt.slice(0, 18)}

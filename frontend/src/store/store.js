@@ -70,6 +70,8 @@ const useStore = create((set)=>({
     result:[...state.result,result]
   })),
 
+  
+
    
    
     

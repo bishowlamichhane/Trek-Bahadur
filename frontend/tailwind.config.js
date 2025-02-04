@@ -81,6 +81,7 @@ export default {
   	}
   },
   plugins: [
+	require('@tailwindcss/typography'),
     function({ addUtilities }) {
       const newUtilities = {
         /* Hide scrollbar for WebKit browsers (Chrome, Safari, etc.) */

@@ -30,3 +30,19 @@
   align-items: center;
   cursor: pointer;
 }
+
+/* Optionally, define some global styles in your CSS or Tailwind configuration */
+.prose h1 {
+  font-size: 2rem;
+  color: #333;
+  font-weight: bold;
+}
+.prose p {
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+.prose blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 1rem;
+  color: #666;
+}

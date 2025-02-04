@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import model from "../config/gemini.js";
 import Loading from "./Loading.jsx";
 import { RiVoiceprintFill } from "react-icons/ri";
+import ReactMarkdown from "react-markdown";
 
 const Main = () => {
   const [isWriting, setIsWriting] = useState(false);
@@ -14,14 +15,14 @@ const Main = () => {
   const loggedIn = useStore((state) => state.loggedIn);
   const firstName =
     loggedIn && userData.fullName ? userData.fullName.split(" ")[0] : "there";
+  const [currentText, setCurrentText] = useState(""); // State to hold current text for word-wise display
+  const [isLoading, setIsLoading] = useState(false);
   const recentPrompt = useStore((state) => state.recentPrompt);
   const setRecentPrompt = useStore((state) => state.setRecentPrompt);
   const setPrevPrompt = useStore((state) => state.setPrevPrompt);
   const inputElement = useRef(null);
   const result = useStore((state) => state.result);
   const setResult = useStore((state) => state.setResult);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleEnter = (e) => {
     if (e.key === "Enter") sendInput();
@@ -49,6 +50,10 @@ const Main = () => {
     setResult(resultText);
     setIsLoading(false);
 
+    // Start displaying words one by one
+    setCurrentText(""); // Reset current text before starting to display
+    displayWords(resultText);
+
     const command = {
       input,
       result: resultText,
@@ -72,13 +77,25 @@ const Main = () => {
     }
   };
 
+  const displayWords = (text) => {
+    const words = text.split(" ");
+    let i = 0;
+    const wordInterval = setInterval(() => {
+      setCurrentText((prev) => prev + " " + words[i]);
+      i++;
+      if (i === words.length) {
+        clearInterval(wordInterval); // Stop after the last word
+      }
+    }, 50); // Adjust the interval time to control the speed of word display
+  };
+
   return (
     <div className="relative w-full h-screen flex flex-col items-center justify-between p-6">
-      <div className="w-full h-14  flex justify-between items-center mt-0">
+      <div className="w-full h-14 flex justify-between items-center mt-0">
         <img
           src="/trekBahadur_logo.png"
           alt="appLogo"
-          className=" h-full object-cover cursor-pointer"
+          className="h-full object-cover cursor-pointer"
           onClick={() => navigate("/")}
         />
         <div className="w-8 h-8">
@@ -90,7 +107,7 @@ const Main = () => {
         </div>
       </div>
 
-      <div className="flex-1 w-full flex flex-col items-center justify-between overflow-hidden">
+      <div className="flex-1 w-full flex flex-col items-center justify-between overflow-hidden px-32">
         {!recentPrompt.length ? (
           <div className="w-full flex flex-col items-center justify-center flex-grow space-y-10">
             <div className="text-6xl font-medium bg-gradient-to-r from-blue-900 via-red-500 to-purple-900 bg-clip-text text-transparent">
@@ -119,7 +136,7 @@ const Main = () => {
           </div>
         ) : (
           /* Chat Output Section */
-          <div className="w-full flex-1 overflow-auto max-h-[65vh] px-8 py-4 space-y-6 border border-gray-300 rounded-md">
+          <div className="w-full flex-1 overflow-auto no-scrollbar max-h-[65vh] px-8 py-4 space-y-6 rounded-md">
             {recentPrompt.map((prompt, idx) => (
               <div key={idx} className="flex flex-col items-start space-y-4">
                 <div className="self-end w-auto px-6 py-2 bg-slate-300 rounded-2xl">
@@ -129,7 +146,9 @@ const Main = () => {
                 {!isLoading ? (
                   <div className="flex items-start space-x-4 w-3/4">
                     <FcDebian className="text-4xl" />
-                    <div className="flex flex-col">{result[idx]}</div>
+                    <ReactMarkdown className="prose prose-md">
+                      {currentText}
+                    </ReactMarkdown>
                   </div>
                 ) : (
                   <Loading />
