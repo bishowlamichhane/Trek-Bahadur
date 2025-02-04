@@ -45,14 +45,12 @@ const Main = () => {
     if (tryy.response) {
       resultText = await tryy.response.text();
       resultText = resultText.replace(/\*/g, "");
-      console.log(resultText);
     }
     setResult(resultText);
-    setIsLoading(false);
 
-    // Start displaying words one by one
-    setCurrentText(""); // Reset current text before starting to display
-    displayWords(resultText);
+    setIsLoading(false);
+    setCurrentText("");
+    displayText(resultText);
 
     const command = {
       input,
@@ -76,17 +74,18 @@ const Main = () => {
       console.log("Error sending the input command ", err);
     }
   };
+  const displayText = (resultText) => {
+    let words = resultText.split(" ");
+    let index = 0;
 
-  const displayWords = (text) => {
-    const words = text.split(" ");
-    let i = 0;
-    const wordInterval = setInterval(() => {
-      setCurrentText((prev) => prev + " " + words[i - 1]);
-      i++;
-      if (i === words.length) {
-        clearInterval(wordInterval); // Stop after the last word
+    const intervalId = setInterval(() => {
+      setCurrentText((prev) => prev + " " + words[index]);
+      index += 1;
+
+      if (index === words.length) {
+        clearInterval(intervalId);
       }
-    }, 30); // Adjust the interval time to control the speed of word display
+    }, 50);
   };
 
   return (
@@ -144,9 +143,12 @@ const Main = () => {
                 </div>
 
                 {!isLoading ? (
-                  <div className="flex items-start space-x-4 w-3/4">
-                    <FcDebian className="text-4xl" />
-                    <ReactMarkdown className="prose prose-md">
+                  <div className="flex items-start space-x-4 w-3/4 ">
+                    <div>
+                      <FcDebian className="text-4xl" />
+                    </div>
+
+                    <ReactMarkdown className="prose prose-md" key={idx}>
                       {currentText}
                     </ReactMarkdown>
                   </div>
