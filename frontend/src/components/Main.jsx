@@ -1,11 +1,9 @@
 import { useRef, useState } from "react";
 import useStore from "../store/store.js";
-import { FcDebian } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import model from "../config/gemini.js";
-import Loading from "./Loading.jsx";
 import { RiVoiceprintFill } from "react-icons/ri";
-import ReactMarkdown from "react-markdown";
+import Response from "./Response.jsx";
 
 const Main = () => {
   const [isWriting, setIsWriting] = useState(false);
@@ -16,7 +14,6 @@ const Main = () => {
   const firstName =
     loggedIn && userData.fullName ? userData.fullName.split(" ")[0] : "there";
 
-  const [isLoading, setIsLoading] = useState(false);
   const recentPrompt = useStore((state) => state.recentPrompt);
   const setRecentPrompt = useStore((state) => state.setRecentPrompt);
   const setPrevPrompt = useStore((state) => state.setPrevPrompt);
@@ -34,7 +31,6 @@ const Main = () => {
   };
 
   const sendInput = async () => {
-    setIsLoading(true);
     const input = inputElement.current.value;
 
     setRecentPrompt(input);
@@ -47,7 +43,6 @@ const Main = () => {
       resultText = resultText.replace(/\*/g, "");
     }
     setResult(resultText);
-    setIsLoading(false);
 
     const command = {
       input,
@@ -64,9 +59,9 @@ const Main = () => {
       });
 
       if (response.ok) {
-        inputElement.current.value = "";
         setIsWriting(false);
       }
+      inputElement.current.value = "";
     } catch (err) {
       console.log("Error sending the input command ", err);
     }
@@ -119,29 +114,7 @@ const Main = () => {
           </div>
         ) : (
           /* Chat Output Section */
-          <div className="w-full flex-1 overflow-auto no-scrollbar max-h-[65vh] px-8 py-4 space-y-6 rounded-md">
-            {recentPrompt.map((prompt, idx) => (
-              <div key={idx} className="flex flex-col items-start space-y-4">
-                <div className="self-end w-auto px-6 py-2 bg-slate-300 rounded-2xl">
-                  {isLoading ? "..." : prompt}
-                </div>
-
-                {!isLoading ? (
-                  <div className="flex items-start space-x-4 w-3/4 ">
-                    <div>
-                      <FcDebian className="text-4xl" />
-                    </div>
-
-                    <ReactMarkdown className="prose prose-md">
-                      {result[idx]}
-                    </ReactMarkdown>
-                  </div>
-                ) : (
-                  <Loading />
-                )}
-              </div>
-            ))}
-          </div>
+          <Response />
         )}
       </div>
 

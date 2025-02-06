@@ -60,7 +60,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between items-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-black w-1/3 h-3/5 rounded-2xl px-6 shadow-lg">
+    <div className="flex flex-col justify-between items-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border bo rder-black w-1/3 h-3/5 rounded-2xl px-6 shadow-lg">
       {/* Logo */}
       <div className="w-full h-1/6 flex items-center justify-center border-b border-gray-300 mb-4">
         <img src="/trekBahadur_logo.png" className="w-64 h-auto" alt="Logo" />
